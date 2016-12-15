@@ -464,6 +464,7 @@ Source40: generate_all_configs.sh
 Source41: generate_debug_configs.sh
 
 Source42: process_configs.sh
+Source43: generate_bls_conf.sh
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -1518,6 +1519,9 @@ BuildKernel() {
 
     # prune junk from kernel-devel
     find $RPM_BUILD_ROOT/usr/src/kernels -name ".*.cmd" -exec rm -f {} \;
+
+    # build a BLS config for this kernel
+    %{SOURCE43} "$KernelVer" "$RPM_BUILD_ROOT" "%{?variant}"
 }
 
 ###
@@ -1829,6 +1833,7 @@ fi
 /lib/modules/%{KVERREL}%{?3:+%{3}}/build\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/source\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/updates\
+/lib/modules/%{KVERREL}%{?3:+%{3}}/bls.conf\
 %if %{1}\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/vdso\
 /etc/ld.so.conf.d/kernel-%{KVERREL}%{?3:+%{3}}.conf\
@@ -1866,6 +1871,9 @@ fi
 #
 #
 %changelog
+* Mon Feb 19 2018 Peter Jones <pjones@redhat.com>
+- Add script that generates BLS config snippets.
+
 * Fri Feb 16 2018 Jeremy Cline <jeremy@jcline.org> - 4.16.0-0.rc1.git4.1
 - Linux v4.16-rc1-100-g1388c80438e6
 
