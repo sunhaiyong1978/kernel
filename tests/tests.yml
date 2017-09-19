@@ -1,0 +1,82 @@
+# Test the Fedora kernel on Fedora Atomic Host
+# Fedora Continuous Integration: https://fedoraproject.org/wiki/CI
+---
+- hosts: localhost
+
+  vars:
+  - artifacts: ./artifacts
+  - remote_artifacts: /root/artifacts
+  - kernel_tests_dir: ./kernel-tests-git
+
+  tags:
+  - atomic
+
+  tasks:
+  - name: Check out kernel-tests
+    local_action:
+      module: git
+      repo: "https://pagure.io/kernel-tests.git"
+      dest: "{{ kernel_tests_dir }}"
+      version: "master"
+      force: yes
+
+  - name: Get the OS version running on the Atomic Host
+    shell: grep VERSION_ID /etc/os-release | sed  -e 's/VERSION_ID=//'
+    register: os_release
+
+  - name: Copy the script to compile the tests into the right directory
+    local_action: shell cp "{{ playbook_dir }}/kernel-tests/compile-tests.sh" "{{ kernel_tests_dir }}/"
+
+  - name: Make sure docker is started locally
+    local_action:
+      module: service
+      args:
+        name: docker
+        state: started
+
+  - name: Run the fedora container to compile the test binaries in the source tree
+    local_action: shell docker run -v {{ playbook_dir }}/{{ kernel_tests_dir }}:/code:Z fedora:{{ os_release.stdout }} /bin/sh /code/compile-tests.sh
+
+  - name: Apply patches to kernel-tests
+    local_action:
+       module: shell git am "{{ playbook_dir }}/kernel-tests/{{ item }}"
+       args:
+         chdir: "{{ kernel_tests_dir }}"
+    with_items:
+       - "0001-Fix-secureboot-test-to-work-with-Atomic-Host.patch"
+       - "0002-Use-example-config-with-enabled-signature-testing.patch"
+       - "0003-Disable-gcc-check-for-Atomic-Host.patch"
+
+  - name: Install the test files
+    synchronize:
+      src: "{{ kernel_tests_dir }}/"
+      dest: /root/
+      mode: push
+      ssh_args: "-o UserKnownHostsFile=/dev/null"
+
+  - name: Install tests and dependencies
+    shell: rpm-ostree install pesign && rpm-ostree ex livefs
+
+  - name: Make artifacts directory
+    file: path={{ remote_artifacts }} state=directory owner=root mode=755 recurse=yes
+
+  - name: Test block
+    block:
+      - name: Execute the tests
+        shell: exec > {{ remote_artifacts }}/test.log 2>&1 && /root/runtests.sh
+      - name: Copy detailed results
+        shell: cp /root/logs/* {{ remote_artifacts }}/
+
+    always:
+      - name: Gather logs
+        shell: (cd {{ remote_artifacts }}; find . -maxdepth 1 -type f) | cut -d'/' -f2
+        register: artifacts_to_fetch
+      - name: Pull out the logs
+        # use fetch here because synchronize in pull mode seems to ask for a password locally
+        fetch:
+          src: "{{ remote_artifacts }}/{{ item }}"
+          dest: "{{ artifacts }}"
+          flat: yes
+          # we don't have md5 on the Atomic Host
+          validate_checksum: no
+        with_items: "{{ artifacts_to_fetch.stdout_lines }}"

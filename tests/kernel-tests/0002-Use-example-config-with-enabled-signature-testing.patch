@@ -1,0 +1,30 @@
+From 58bf63498ec2906dec66816c1cef0e01c966dcbc Mon Sep 17 00:00:00 2001
+From: Dominik Perpeet <dperpeet@redhat.com>
+Date: Wed, 20 Sep 2017 13:13:38 +0200
+Subject: [PATCH 2/3] Use example config with enabled signature testing
+
+---
+ config.example => .config | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+ rename config.example => .config (95%)
+
+diff --git a/config.example b/.config
+similarity index 95%
+rename from config.example
+rename to .config
+index 6ae342e..76a9215 100644
+--- a/config.example
++++ b/.config
+@@ -11,8 +11,8 @@ submit=none
+ # disable_retest=y
+
+ # Check Signature for Secure Boot
+-# checksig=y
+-# validsig="Fedora Secure Boot Signer"
++checksig=y
++validsig="Fedora Secure Boot Signer"
+
+ # Test 3rd Party Modules
+ # thirdparty=y
+--
+2.9.5

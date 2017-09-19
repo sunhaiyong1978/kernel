@@ -1,0 +1,30 @@
+From 3cfd2db77fddfd635b7a08d6537bdeab3b28c026 Mon Sep 17 00:00:00 2001
+From: Dominik Perpeet <dperpeet@redhat.com>
+Date: Wed, 20 Sep 2017 14:03:31 +0200
+Subject: [PATCH 3/3] Disable gcc check for Atomic Host
+
+---
+ runtests.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/runtests.sh b/runtests.sh
+index 8820c2b..400d380 100755
+--- a/runtests.sh
++++ b/runtests.sh
+@@ -25,10 +25,10 @@ kver=$(uname -r)
+ release=$(cat /etc/redhat-release)
+
+ # Check for pre-requisites.
+-if [ ! -f /usr/bin/gcc ]; then
+-       echo Fedora kernel test suite needs gcc.
+-       exit
+-fi
++#if [ ! -f /usr/bin/gcc ]; then
++#      echo Fedora kernel test suite needs gcc.
++#      exit
++#fi
+
+ # unset MALLOC_CHECK_ and MALLOC_PERTURB_.  Some tests might not work well
+ # with those active (like libhugetlbfs)
+--
+2.9.5
