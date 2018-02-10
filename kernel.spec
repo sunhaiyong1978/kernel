@@ -1914,6 +1914,9 @@ fi
 #
 #
 %changelog
+* Sat Feb 10 2018 François Cami <fcami@fedoraproject.org>
+- Enable CONFIG_DRM_AMDGPU_SI 
+
 * Thu Feb  8 2018 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add Exynos5 patch (second part of series) to fix USB-3 devices on some Odroid devices
 - Fix up and re-enable adv7511
