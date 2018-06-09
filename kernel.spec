@@ -608,6 +608,17 @@ Patch501: Fix-for-module-sig-verification.patch
 # rhbz 1431375
 Patch502: input-rmi4-remove-the-need-for-artifical-IRQ.patch
 
+# https://www.spinics.net/lists/platform-driver-x86/msg15719.html
+Patch503: dell-laptop-fix_AC_keyboard_backlight_timeout_on_Dell_XPS_13_9370.patch
+
+# rhbz 1577106
+# http://lists.infradead.org/pipermail/ath10k/2018-June/011582.html
+Patch504: ath10k-Update_the_phymode_along_with_bandwidth_change_request.patch
+
+# rhbz 1568276
+# https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git/commit/?h=rtc-next&id=c59b3715ac16544f8f68ab7af03f108e339b36aa
+Patch505: rtc-nvmem-dont-return-an-error-when-not-enabled.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif

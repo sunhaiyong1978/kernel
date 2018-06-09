@@ -1,0 +1,187 @@
+From ryanhsu@codeaurora.org Fri Jun  8 11:34:12 2018
+Delivered-To: timur.kristof@gmail.com
+Received: by 2002:a1c:4acc:0:0:0:0:0 with SMTP id n73-v6csp1127408wmi;
+        Fri, 8 Jun 2018 11:34:12 -0700 (PDT)
+X-Google-Smtp-Source:
+ ADUXVKIE5O4pkNdLhpedqYRyecZas6PRP1Cdr18A4p8y6Rmhoye/Aagbkn6oemYiEV4pJIA92mT4
+X-Received: by 2002:a63:be0a:: with SMTP id
+ l10-v6mr6049062pgf.87.1528482852766; Fri, 08 Jun 2018 11:34:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1528482852; cv=none; d=google.com;
+ s=arc-20160816;
+ b=GT7+lyC2hPdne45V+0uVH2tj+crvEx3MMZKk8dFc7/Dur6mdo7hcSdyx++6D1P2Kwg
+ ZqoVsSC7hzt7qTV9OO5gAkjl70q16Gao7RijEO52KFI/X42RlHCNmjAVhMP2PXuxu38O
+ JnLaAwiiHmZZbsACaiQd32fWohfQD963y/XZnQ8R3iH6BfkOq+rVTzXGoDymUS6mqYUv
+ 6vHUc18V3qFlcbgZ6YOiQ01GJ/e/za+I1w55deOhloDF2kXRCggw6NmFICia6Ja3nZAt
+ IzIP2hfnGr25OPhMru7uR+0y66iw3mI48VEgKVckVMc+Wz48z/vqX/3+LGtDiP4Wnlqg KU7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20160816;
+ h=message-id:date:subject:cc:to:from:dmarc-filter:dkim-signature
+ :dkim-signature:arc-authentication-results;
+ bh=7F43Yve3sz5Mbk9pg0MmDFtQu9c85FYGan2F3kwhsBg=;
+ b=vOPfSkx7/wEt2gFplrasLoWeLOhg8qhr1bqc43R69AkrI07XtUlqhfH5HHgteXWsqA
+ 6+aCX6UP51HKowtToiBm6oV0iGDhrQh6MGX+bpmr8Wysn9y5Z4IkO34dsFUro5EIETF1
+ yoFRyufgQemTpvCcy2Zl52sNM9poEUKqiFuA2Cwu1BHIPm+7C7kH+b4mSx2XEbSvzDjL
+ LN59a7Mg4Ac8GlMm12dRlcE1ePJ7H2GED2C1H+9GtGxqFhCAyOthOuPvTu9uioyfJNtE
+ 0etX+k0lHLWRy02QpniYCw4zNC7yLSE2MSRlz5jA5ZzKJO+KCrFEgqiaJKxwzX7tgOsE oAcw==
+ARC-Authentication-Results: i=1; mx.google.com; dkim=pass
+ header.i=@codeaurora.org header.s=default header.b=h8Sc2Vra; dkim=pass
+ header.i=@codeaurora.org header.s=default header.b=c/229ev8; spf=pass
+ (google.com: domain of ryanhsu@codeaurora.org designates 198.145.29.96 as
+ permitted sender) smtp.mailfrom=ryanhsu@codeaurora.org
+Return-Path: <ryanhsu@codeaurora.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org. [198.145.29.96])
+ by mx.google.com with ESMTPS id d10-v6si18819610pgu.626.2018.06.08.11.34.12
+ for <timur.kristof@gmail.com> (version=TLS1_2
+ cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128); Fri, 08 Jun 2018 11:34:12
+ -0700 (PDT)
+Received-SPF: pass (google.com: domain of ryanhsu@codeaurora.org designates
+ 198.145.29.96 as permitted sender) client-ip=198.145.29.96;
+Authentication-Results: mx.google.com; dkim=pass header.i=@codeaurora.org
+ header.s=default header.b=h8Sc2Vra; dkim=pass header.i=@codeaurora.org
+ header.s=default header.b=c/229ev8; spf=pass (google.com: domain of
+ ryanhsu@codeaurora.org designates 198.145.29.96 as permitted sender)
+ smtp.mailfrom=ryanhsu@codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+	id 588CA605A5; Fri,  8 Jun 2018 18:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+	s=default; t=1528482852;
+	bh=u67rrMcaJ7rVoAedaqMU3yQYPfGpeIdckgWFtBZwyL8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=h8Sc2VraN6KaXrRwVf1WKL9TRNmVMYhW3R/1XzeQsNJkCm5ctS+ig2XrGMR8qxHZP
+	 rdtgEYDPl+qIVRhJ16kiYTNOmDLYZMPEmoWd1opfC0pCGFhaPLdr+DWhjqmEkhEQcS
+	 tsGg6du+sgc9ud90eBosf/1TmBBjuZu2MWbr4JuY=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	pdx-caf-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+	DKIM_SIGNED,T_DKIM_INVALID autolearn=no autolearn_force=no version=3.4.0
+Received: from ryanhsu-linux2.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254]) (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256
+ (128/128 bits)) (No client certificate requested) (Authenticated sender:
+ ryanhsu@smtp.codeaurora.org) by smtp.codeaurora.org (Postfix) with ESMTPSA
+ id AE11D605A2; Fri,  8 Jun 2018 18:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+	s=default; t=1528482851;
+	bh=u67rrMcaJ7rVoAedaqMU3yQYPfGpeIdckgWFtBZwyL8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=c/229ev8btpqYMyDUdnJhkZw7PsKW+jkITBuUyxxkNd2fHdnoh3aB49fNeDZ1zi55
+	 gAyR+JwoAmPqRBpJaFD9/AkY84YFCK4lZnGzHW2J4uBwFdbnJNqQZ9mJ3WJ7JCRGKT
+	 nwCKBr3JqkbbQZv2I2XrxA0sPGBymn2V1DHObZ1I=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE11D605A2
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none
+ dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none
+ smtp.mailfrom=ryanhsu@codeaurora.org
+From: Ryan Hsu <ryanhsu@codeaurora.org>
+To: ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org
+Cc: timur.kristof@gmail.com
+Subject: [PATCH v2] ath10k: Update the phymode along with bandwidth change
+ request
+Date: Fri,  8 Jun 2018 11:32:39 -0700
+Message-Id: <1528482759-12604-1-git-send-email-ryanhsu@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
+X-Evolution-Source: 572fc47725462d0a763b181e96ce3f766af355fa
+Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+
+In the case of Station connects to AP with narrower bandwidth at beginning.
+And later the AP changes the bandwidth to winder bandwidth, the AP will
+beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
+
+Since the supported BANDWIDTH will be limited by the PHYMODE, so while
+Station receives the bandwidth change request, it will also need to
+reconfigure the PHYMODE setting to firmware instead of just configuring
+the BANDWIDTH info, otherwise it'll trigger a firmware crash with
+non-support bandwidth.
+
+The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
+below scenario.
+---
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+disconnect from AP xxx for new auth to yyy
+RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
+associated
+
+....
+
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0 MHz)
+
+....
+
+firmware register dump:
+[00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
+[04]: 0x00987291 0x00060730 0x00000004 0x00000001
+[08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
+[12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
+[16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
+[20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
+[24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
+[28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
+[32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
+[36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
+[40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
+[44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
+[48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
+[52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
+[56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
+--
+
+Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h |  1 +
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e9c2fb3..836e0a4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6058,8 +6058,19 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
+ 
+ 	if (changed & IEEE80211_RC_BW_CHANGED) {
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
+-			   sta->addr, bw);
++		enum wmi_phy_mode mode;
++
++		mode = chan_to_phymode(&def);
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
++				sta->addr, bw, mode);
++
++		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++				WMI_PEER_PHYMODE, mode);
++		if (err) {
++			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
++					sta->addr, mode, err);
++			goto exit;
++		}
+ 
+ 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+ 						WMI_PEER_CHAN_WIDTH, bw);
+@@ -6100,6 +6111,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 				    sta->addr);
+ 	}
+ 
++exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b48db54..d68afb6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6144,6 +6144,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_NSS        = 0x5,
+ 	WMI_PEER_USE_4ADDR  = 0x6,
+ 	WMI_PEER_DEBUG      = 0xa,
++	WMI_PEER_PHYMODE    = 0xd,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+ };
+ 
+-- 
+1.9.1
+
+
