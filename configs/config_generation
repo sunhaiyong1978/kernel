@@ -1,5 +1,5 @@
 # config-variant=config:config:config
-# kernel.config files are build on the fly based on this config,
+# kernel.config files are built on the fly based on this config,
 # the first arg is arch and variant, the second is a hierarchy of
 # config options, lowest priority to highest
 
