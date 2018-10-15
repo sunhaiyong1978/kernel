@@ -27,11 +27,11 @@ config-files:
 	@./build_configs.sh
 
 debug:
-	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
+	@perl -pi -e 's/^%define debugbuildsenabled 0/%define debugbuildsenabled 1/' kernel.spec
 	@rpmdev-bumpspec -c "Reenable debugging options." kernel.spec
 
 release:
-	@perl -pi -e 's/^%define debugbuildsenabled 0/%define debugbuildsenabled 1/' kernel.spec
+	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
 	@rpmdev-bumpspec -c "Disable debugging options." kernel.spec
 
 nodebuginfo:
