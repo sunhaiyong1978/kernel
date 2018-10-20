@@ -7,8 +7,6 @@
 # Author: Herton R. Krzesinski <herton@redhat.com>
 # Author: Justin M. Forbes <jforbes@redhat.com>
 
-set -e
-
 # Location of kernel-headers checkout
 CURRENTDIR=`pwd`
 PKGLOC='kernel-headers'
@@ -21,19 +19,20 @@ fi
 # Kernel version information taken from kernel.spec and change to prepared sources directory
 MAJORVER='4'
 RELEASED=`grep "%global released_kernel" kernel.spec| cut -d ' ' -f 3`
-BASERELEASE=`cat kernel.spec | grep "%global baserelease" | cut -d ' ' -f 3`
+BASERELEASE=`grep "%global baserelease" kernel.spec | cut -d ' ' -f 3`
 BASE=`grep "%define base_sublevel" kernel.spec| cut -d ' ' -f 3`
+BUILDID=`grep "%define buildid" kernel.spec | cut -d ' ' -f 3`
 STABLE=`grep "%define stable_update" kernel.spec| cut -d ' ' -f 3`
 RC=`grep "%global rcrev" kernel.spec| cut -d ' ' -f 3`
 GITREV=`grep "%define gitrev" kernel.spec| cut -d ' ' -f 3`
 if [ $RELEASED -eq 0 ]; then
 	cd kernel-$MAJORVER.$BASE.fc??
 	NEWBASE=$(($BASE+1))
-	KVER=$MAJORVER.$NEWBASE.0-0.rc$RC.git$GITREV.$BASERELEASE
-	cd linux-$MAJORVER.$NEWBASE.0-0.rc$RC.git$GITREV.$BASERELEASE.fc*/
+	KVER=$MAJORVER.$NEWBASE.0-0.rc$RC.git$GITREV.$BASERELEASE$BUILDID
+	cd linux-$MAJORVER.$NEWBASE.0-0.rc$RC.git$GITREV.$BASERELEASE$BUILDID.fc*/
 else
-	cd kernel-$MAJORVER.$BASE.fc??/linux-$MAJORVER.$BASE.$STABLE-$BASERELEASE.fc*/
-	KVER=$MAJORVER.$BASE.$STABLE-$BASERELEASE
+	cd kernel-$MAJORVER.$BASE.fc??/linux-$MAJORVER.$BASE.$STABLE-$BASERELEASE$BUILDID.fc*/
+	KVER=$MAJORVER.$BASE.$STABLE-$BASERELEASE$BUILDID
 fi
 
 # ARCH_LIST below has the default list of supported architectures
@@ -61,7 +60,8 @@ cd $CURRENTDIR/$PKGLOC/
 
 BASE=$BASE perl -p -i -e 's|%define base_sublevel.*|%define base_sublevel $ENV{'BASE'}|' kernel-headers.spec
 BASERELEASE=$(($BASERELEASE-1))
-BASERELEASE=$BASERELEASE perl -p -i -e 's|%global baserelease.*|%global baserelease $ENV{'BASERELEASE'}|' kernel-headers.spec
+RELEASE="$BASERELEASE$BUILDID"
+RELEASE=$RELEASE perl -p -i -e 's|%global baserelease.*|%global baserelease $ENV{'RELEASE'}|' kernel-headers.spec
 
 if [ $RELEASED -eq 0 ]; then
 	RC=$RC perl -p -i -e 's|%global rcrev.*|%global rcrev $ENV{'RC'}|' kernel-headers.spec
