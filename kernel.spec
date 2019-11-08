@@ -714,6 +714,9 @@ Patch504: 0001-mm-kmemleak-skip-late_init-if-not-skip-disable.patch
 # https://lkml.org/lkml/2019/8/29/1772
 Patch505: ARM-fix-__get_user_check-in-case-uaccess_-calls-are-not-inlined.patch
 
+# Intel ASoC Sound Open Firmware driver support (remove for 5.5)
+Patch606: intel-sof.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
