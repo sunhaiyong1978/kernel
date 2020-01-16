@@ -4,3 +4,6 @@
 
 - name: filesystem test
   import_playbook: filesystem.yml
+
+- name: security test
+  import_playbook: security.yml

@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tags:
+  - classic
+  roles:
+  - role: standard-test-beakerlib
+    repositories:
+    # Fetch SELinux kernel tests from common repository.
+    # If any of these tests fails, consult selinux@lists.fedoraproject.org
+    - repo: "https://src.fedoraproject.org/tests/selinux.git"
+      dest: "selinux"
+      fmf_filter: "component:kernel"
