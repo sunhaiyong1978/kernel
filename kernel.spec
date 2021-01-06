@@ -852,6 +852,9 @@ Patch104: 0001-mwifiex-Fix-possible-buffer-overflows-in-mwifiex_cmd.patch
 
 Patch105: 0001-ALSA-hda-via-Fix-runtime-PM-for-Clevo-W35xSS.patch
 
+# Nouveau mDP detection fix
+Patch106: 0001-drm-nouveau-kms-handle-mDP-connectors.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
