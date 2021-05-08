@@ -2791,6 +2791,9 @@ fi
 #
 #
 %changelog
+* Sat May 08 2021 Lianbo Jiang <lijiang@redhat.com>
+- Force kernel to generate DWARF4 debuginfo
+
 * Wed Apr 28 2021 Fedora Kernel Team <kernel-team@fedoraproject.org> [5.13.0-0.rc0.20210428gitacd3d2859453.2]
 - Reset the counter as we start the 5.13 merge window (Justin M. Forbes)
 - Create ark-latest branch last for CI scripts (Don Zickus)
