@@ -117,13 +117,13 @@ Summary: The Linux kernel
 %define kversion 5.14
 
 %define rpmversion 5.14.0
-%define pkgrelease 0.rc1.20210714git40226a3d96ef.18
+%define pkgrelease 0.rc1.20210714git40226a3d96ef.19
 
 # This is needed to do merge window version magic
 %define patchlevel 14
 
 # allow pkg_release to have configurable %%{?dist} tag
-%define specrelease 0.rc1.20210714git40226a3d96ef.18%{?buildid}%{?dist}
+%define specrelease 0.rc1.20210714git40226a3d96ef.19%{?buildid}%{?dist}
 
 %define pkg_release %{specrelease}
 
@@ -2922,6 +2922,9 @@ fi
 #
 #
 %changelog
+* Fri Jul 16 2021 patrick lang [5.14.0-0.rc1.20210714git40226a3d96ef.19]
+- Switch to DRM_HYPERV from FB_HYPERV (Patrick Lang)
+
 * Wed Jul 14 2021 Fedora Kernel Team <kernel-team@fedoraproject.org> [5.14.0-0.rc1.20210714git40226a3d96ef.18]
 - CI: Handle all mirrors (Veronika Kabatova)
 - Turn on CONFIG_STACKTRACE for s390x zfpcdump kernels (Justin M. Forbes)
