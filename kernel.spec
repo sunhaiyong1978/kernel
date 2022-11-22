@@ -567,7 +567,7 @@ ExclusiveArch: noarch i386 i686 x86_64 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
 Requires: kernel-core-uname-r = %{KVERREL}
-Requires: kernel-modules-uname-r = %{KVERREL}
+Requires: kernel-modules-standard-uname-r = %{KVERREL}
 %endif
 
 
@@ -1205,7 +1205,7 @@ Provides: kernel%{?1:-%{1}}-modules-internal = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-internal-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel%{?1:-%{1}}-modules-standard-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReq: no\
 AutoProv: yes\
 %description %{?1:%{1}-}modules-internal\
@@ -1225,7 +1225,7 @@ Provides: kernel%{?1:-%{1}}-modules-extra = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel%{?1:-%{1}}-modules-standard-uname-r = %{KVERREL}%{?1:+%{1}}\
 %if %{-m:1}%{!-m:0}\
 Requires: kernel-modules-extra-uname-r = %{KVERREL}\
 %endif\
@@ -1236,24 +1236,24 @@ This package provides less commonly used kernel modules for the %{?2:%{2} }kerne
 %{nil}
 
 #
-# This macro creates a kernel-<subpackage>-modules package.
-#	%%kernel_modules_package [-m] <subpackage> <pretty-name>
+# This macro creates a kernel-<subpackage>-modules-standard package.
+#	%%kernel_modules_standard_package [-m] <subpackage> <pretty-name>
 #
-%define kernel_modules_package(m) \
-%package %{?1:%{1}-}modules\
-Summary: kernel modules to match the %{?2:%{2}-}core kernel\
-Provides: kernel%{?1:-%{1}}-modules-%{_target_cpu} = %{version}-%{release}\
-Provides: kernel-modules-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
-Provides: kernel-modules = %{version}-%{release}%{?1:+%{1}}\
+%define kernel_modules_standard_package(m) \
+%package %{?1:%{1}-}modules-standard\
+Summary: Standard kernel modules to match the %{?2:%{2}-}core kernel\
+Provides: kernel%{?1:-%{1}}-modules-standard-%{_target_cpu} = %{version}-%{release}\
+Provides: kernel-modules-standard-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-modules-standard = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Provides: kernel%{?1:-%{1}}-modules-standard-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 %if %{-m:1}%{!-m:0}\
-Requires: kernel-modules-uname-r = %{KVERREL}\
+Requires: kernel-modules-standard-uname-r = %{KVERREL}\
 %endif\
 AutoReq: no\
 AutoProv: yes\
-%description %{?1:%{1}-}modules\
+%description %{?1:%{1}-}modules-standard\
 This package provides commonly used kernel modules for the %{?2:%{2}-}core kernel package.\
 %{nil}
 
@@ -1265,7 +1265,7 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 %package %{1}\
 summary: kernel meta-package for the %{1} kernel\
 Requires: kernel-%{1}-core-uname-r = %{KVERREL}+%{1}\
-Requires: kernel-%{1}-modules-uname-r = %{KVERREL}+%{1}\
+Requires: kernel-%{1}-modules-standard-uname-r = %{KVERREL}+%{1}\
 Provides: installonlypkg(kernel)\
 %description %{1}\
 The meta-package for the %{1} kernel\
@@ -1290,7 +1290,7 @@ Requires: kernel-core-uname-r = %{KVERREL}\
 %endif\
 %{expand:%%kernel_devel_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}} %{-m:%{-m}}}\
 %{expand:%%kernel_devel_matched_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}} %{-m:%{-m}}}\
-%{expand:%%kernel_modules_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}} %{-m:%{-m}}}\
+%{expand:%%kernel_modules_standard_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}} %{-m:%{-m}}}\
 %{expand:%%kernel_modules_extra_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}} %{-m:%{-m}}}\
 %if %{-m:0}%{!-m:1}\
 %{expand:%%kernel_modules_internal_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
@@ -1315,7 +1315,7 @@ Provides: kernel%{?1:-%{1}}-modules-partner = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-partner-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel%{?1:-%{1}}-modules-standard-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReq: no\
 AutoProv: yes\
 %description %{?1:%{1}-}modules-partner\
@@ -2168,7 +2168,7 @@ BuildKernel() {
 
     # Make sure the files lists start with absolute paths or rpmbuild fails.
     # Also add in the dir entries
-    sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/k-d.list > ../kernel${Variant:+-${Variant}}-modules.list
+    sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/k-d.list > ../kernel${Variant:+-${Variant}}-modules-standard.list
     sed -e 's/^lib*/%dir \/lib/' %{?zipsed} $RPM_BUILD_ROOT/module-dirs.list > ../kernel${Variant:+-${Variant}}-core.list
     sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/modules.list >> ../kernel${Variant:+-${Variant}}-core.list
     sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/mod-extra.list >> ../kernel${Variant:+-${Variant}}-modules-extra.list
@@ -2828,18 +2828,18 @@ fi\
 # It also defines a %%postun script that does the same thing.
 #	%%kernel_modules_post [<subpackage>]
 #
-%define kernel_modules_post() \
-%{expand:%%post %{?1:%{1}-}modules}\
+%define kernel_modules_standard_post() \
+%{expand:%%post %{?1:%{1}-}modules-standard}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 if [ ! -f %{_localstatedir}/lib/rpm-state/%{name}/installing_core_%{KVERREL}%{?1:+%{1}} ]; then\
 	mkdir -p %{_localstatedir}/lib/rpm-state/%{name}\
 	touch %{_localstatedir}/lib/rpm-state/%{name}/need_to_run_dracut_%{KVERREL}%{?1:+%{1}}\
 fi\
 %{nil}\
-%{expand:%%postun %{?1:%{1}-}modules}\
+%{expand:%%postun %{?1:%{1}-}modules-standard}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}\
-%{expand:%%posttrans %{?1:%{1}-}modules}\
+%{expand:%%posttrans %{?1:%{1}-}modules-standard}\
 if [ -f %{_localstatedir}/lib/rpm-state/%{name}/need_to_run_dracut_%{KVERREL}%{?1:+%{1}} ]; then\
 	rm -f %{_localstatedir}/lib/rpm-state/%{name}/need_to_run_dracut_%{KVERREL}%{?1:+%{1}}\
 	echo "Running: dracut -f --kver %{KVERREL}%{?1:+%{1}}"\
@@ -2874,7 +2874,7 @@ fi\
 #
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
-%{expand:%%kernel_modules_post %{?-v*}}\
+%{expand:%%kernel_modules_standard_post %{?-v*}}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
 %{expand:%%kernel_modules_internal_post %{?-v*}}\
 %if 0%{!?fedora:1}\
@@ -3138,7 +3138,7 @@ fi
 /lib/modules/%{KVERREL}%{?3:+%{3}}/vdso\
 %endif\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/modules.*\
-%{expand:%%files -f kernel-%{?3:%{3}-}modules.list %{?3:%{3}-}modules}\
+%{expand:%%files -f kernel-%{?3:%{3}-}modules-standard.list %{?3:%{3}-}modules-standard}\
 %{expand:%%files %{?3:%{3}-}devel}\
 %defverify(not mtime)\
 /usr/src/kernels/%{KVERREL}%{?3:+%{3}}\
@@ -3167,7 +3167,7 @@ fi
 %files debug-core
 %files debug-devel
 %files debug-devel-matched
-%files debug-modules
+%files debug-modules-standard
 %files debug-modules-extra
 %endif
 %kernel_variant_files %{use_vdso} %{with_pae} lpae
