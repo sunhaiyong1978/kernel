@@ -105,6 +105,9 @@ determine_config_path()
 		arm64)
 			config_path="$config_path/arm/aarch64"
 			;;
+		loongarch)
+			config_path="$config_path/loongarch/loongarch64"
+			;;
 		powerpc)
 			config_path="$config_path/powerpc"
 			;;

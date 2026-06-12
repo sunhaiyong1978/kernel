@@ -243,17 +243,29 @@ Summary: The Linux kernel
 %define with_arm64_16k %{?_with_arm64_16k:    1} %{?!_with_arm64_16k:    0}
 # kernel-64k (aarch64 kernel with 64K page_size)
 %define with_arm64_64k %{?_without_arm64_64k: 0} %{?!_without_arm64_64k: 1}
+# kernel-4k (loongarch64 kernel with 4K page_size)
+%define with_loongarch64_4k %{?_with_loongarch64_4k:    0} %{?!_with_loongarch64_4k:    1}
+# kernel-64k (loongarch64 kernel with 64K page_size)
+%define with_loongarch64_64k %{?_with_loongarch64_64k:    0} %{?!_with_loongarch64_64k:    1}
 # we default reatime builds to off for fedora and on for rhel/centos/eln
 %if 0%{?fedora}
 # kernel-rt (x86_64 and aarch64 only PREEMPT_RT enabled kernel)
 %define with_realtime  %{?_with_realtime:  1} %{?!_with_realtime:  0}
 # kernel-rt-64k (aarch64 RT kernel with 64K page_size)
 %define with_realtime_arm64_64k %{?_with_realtime_arm64_64k: 1} %{?!_with_realtime_arm64_64k: 0}
+# kernel-rt-4k (loongarch64 RT kernel with 4K page_size)
+%define with_realtime_loongarch64_4k %{?_with_realtime_loongarch64_4k: 1} %{?!_with_realtime_loongarch64_4k: 0}
+# kernel-rt-64k (loongarch64 RT kernel with 64K page_size)
+%define with_realtime_loongarch64_64k %{?_with_realtime_loongarch64_64k: 1} %{?!_with_realtime_loongarch64_64k: 0}
 %else
 # kernel-rt (x86_64 and aarch64 only PREEMPT_RT enabled kernel)
 %define with_realtime  %{?_without_realtime:  0} %{?!_without_realtime:  1}
 # kernel-rt-64k (aarch64 RT kernel with 64K page_size)
 %define with_realtime_arm64_64k %{?_without_realtime_arm64_64k: 0} %{?!_without_realtime_arm64_64k: 1}
+# kernel-rt-4k (loongarch64 RT kernel with 4K page_size)
+%define with_realtime_loongarch64_4k %{?_with_realtime_loongarch64_4k: 0} %{?!_without_realtime_loongarch64_4k: 1}
+# kernel-rt-64k (loongarch64 RT kernel with 64K page_size)
+%define with_realtime_loongarch64_64k %{?_with_realtime_loongarch64_64k: 0} %{?!_without_realtime_loongarch64_64k: 1}
 %endif
 # kernel-automotive (x86_64 and aarch64 with PREEMPT_RT enabled - currently off by default)
 %define with_automotive %{?_with_automotive:  1} %{?!_with_automotive:   0}
@@ -452,6 +464,8 @@ Summary: The Linux kernel
 %if %{with_rtonly}
 %define with_realtime 1
 %define with_realtime_arm64_64k 1
+%define with_realtime_loongarch64_4k 1
+%define with_realtime_loongarch64_64k 1
 %define with_automotive 0
 %define with_stock 0
 %define with_debug 0
@@ -468,6 +482,8 @@ Summary: The Linux kernel
 %define with_zfcpdump 0
 %define with_arm64_16k 0
 %define with_arm64_64k 0
+%define with_loongarch64_4k 0
+%define with_loongarch64_64k 0
 %endif
 
 # if requested, only build the automotive variant of the kernel
@@ -495,8 +511,12 @@ Summary: The Linux kernel
 %define with_debug 0
 %define with_realtime 0
 %define with_realtime_arm64_64k 0
+%define with_realtime_loongarch64_4k 0
+%define with_realtime_loongarch64_64k 0
 %define with_arm64_16k 0
 %define with_arm64_64k 0
+%define with_loongarch64_4k 0
+%define with_loongarch64_64k 0
 %define with_automotive 0
 %define with_cross_headers 0
 %define with_doc 0
@@ -516,7 +536,7 @@ Summary: The Linux kernel
 %endif
 
 # RT and Automotive kernels are only built on x86_64 and aarch64
-%ifnarch x86_64 aarch64
+%ifnarch x86_64 aarch64 loongarch64
 %define with_realtime 0
 %define with_automotive 0
 %endif
@@ -530,8 +550,12 @@ Summary: The Linux kernel
 # automotive does not support the following variants
 %define with_realtime 0
 %define with_realtime_arm64_64k 0
+%define with_realtime_loongarch64_4k 0
+%define with_realtime_loongarch64_64k 0
 %define with_arm64_16k 0
 %define with_arm64_64k 0
+%define with_loongarch64_4k 0
+%define with_loongarch64_64k 0
 %define with_efiuki 0
 %define with_dtbloader 0
 %define with_doc 0
@@ -578,7 +602,7 @@ Summary: The Linux kernel
 
 %if 0%{?fedora}
 # don't do debug builds on anything but aarch64 and x86_64
-%ifnarch aarch64 x86_64
+%ifnarch aarch64 x86_64 loongarch64
 %define with_debug 0
 %endif
 %endif
@@ -614,6 +638,13 @@ Summary: The Linux kernel
 %define with_arm64_16k 0
 %define with_arm64_64k 0
 %define with_realtime_arm64_64k 0
+%endif
+
+%ifnarch loongarch64
+%define with_loongarch64_4k 0
+%define with_loongarch64_64k 0
+%define with_realtime_loongarch64_4k 0
+%define with_realtime_loongarch64_64k 0
 %endif
 
 %if 0%{?fedora}
@@ -664,6 +695,13 @@ Summary: The Linux kernel
 %define kernel_image arch/riscv/boot/vmlinuz.efi
 %endif
 
+%ifarch loongarch64
+%define asmarch loongarch
+%define hdrarch loongarch
+%define make_target vmlinuz.efi
+%define kernel_image arch/loongarch/boot/vmlinuz.efi
+%endif
+
 # Should make listnewconfig fail if there's config options
 # printed out?
 %if %{nopatches}
@@ -690,8 +728,12 @@ Summary: The Linux kernel
 %define with_zfcpdump 0
 %define with_arm64_16k 0
 %define with_arm64_64k 0
+%define with_loongarch64_4k 0
+%define with_loongarch64_64k 0
 %define with_realtime 0
 %define with_realtime_arm64_64k 0
+%define with_realtime_loongarch64_4k 0
+%define with_realtime_loongarch64_64k 0
 %define with_automotive 0
 
 %define with_debuginfo 0
@@ -704,9 +746,9 @@ Summary: The Linux kernel
 
 # Architectures we build tools/cpupower on
 %if 0%{?fedora}
-%define cpupowerarchs %{ix86} x86_64 ppc64le aarch64 riscv64
+%define cpupowerarchs %{ix86} x86_64 ppc64le aarch64 riscv64 loongarch64
 %else
-%define cpupowerarchs i686 x86_64 ppc64le aarch64 riscv64
+%define cpupowerarchs i686 x86_64 ppc64le aarch64 riscv64 loongarch64
 %endif
 
 %if 0%{?use_vdso}
@@ -752,10 +794,30 @@ Summary: The Linux kernel
 %else
 %define with_arm64_64k_base 0
 %endif
+%if %{with_loongarch64_4k} && %{with_base}
+%define with_loongarch64_4k_base 1
+%else
+%define with_loongarch64_4k_base 0
+%endif
+%if %{with_loongarch64_64k} && %{with_base}
+%define with_loongarch64_64k_base 1
+%else
+%define with_loongarch64_64k_base 0
+%endif
 %if %{with_realtime_arm64_64k} && %{with_base}
 %define with_realtime_arm64_64k_base 1
 %else
 %define with_realtime_arm64_64k_base 0
+%endif
+%if %{with_realtime_loongarch64_4k} && %{with_base}
+%define with_realtime_loongarch64_4k_base 1
+%else
+%define with_realtime_loongarch64_4k_base 0
+%endif
+%if %{with_realtime_loongarch64_64k} && %{with_base}
+%define with_realtime_loongarch64_64k_base 1
+%else
+%define with_realtime_loongarch64_64k_base 0
 %endif
 
 #
@@ -774,9 +836,9 @@ Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
 %if 0%{?fedora}
-ExclusiveArch: noarch x86_64 s390x aarch64 ppc64le riscv64
+ExclusiveArch: noarch x86_64 s390x aarch64 ppc64le riscv64 loongarch64
 %else
-ExclusiveArch: noarch i386 i686 x86_64 s390x aarch64 ppc64le riscv64
+ExclusiveArch: noarch i386 i686 x86_64 s390x aarch64 ppc64le riscv64 loongarch64
 %endif
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
@@ -796,7 +858,7 @@ Provides: installonlypkg(kernel)
 BuildRequires: kmod, bash, coreutils, tar, git-core, which
 BuildRequires: bzip2, xz, findutils, m4, perl-interpreter, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk, %compression
 # Kernel EFI/Compression set by CONFIG_KERNEL_ZSTD
-%ifarch x86_64 aarch64 riscv64
+%ifarch x86_64 aarch64 riscv64 loongarch64
 BuildRequires: zstd
 %endif
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc, bison, flex, gcc-c++
@@ -869,7 +931,7 @@ BuildRequires: openssl-devel
 
 %if %{with_selftests}
 BuildRequires: clang llvm-devel fuse-devel zlib-devel binutils-devel python3-docutils python3-jsonschema
-%ifarch x86_64 riscv64
+%ifarch x86_64 riscv64 loongarch64
 BuildRequires: lld
 %endif
 BuildRequires: libasan-static
@@ -910,7 +972,7 @@ BuildRequires: openssl
 %if 0%{?rhel}%{?centos} && !0%{?eln}
 BuildRequires: system-sb-certs
 %endif
-%ifarch x86_64 aarch64 riscv64
+%ifarch x86_64 aarch64 riscv64 loongarch64
 BuildRequires: nss-tools
 BuildRequires: pesign >= 0.10-4
 %endif
@@ -1088,6 +1150,12 @@ Source60: %{name}-x86_64-fedora.config
 Source61: %{name}-x86_64-debug-fedora.config
 Source700: %{name}-riscv64-fedora.config
 Source701: %{name}-riscv64-debug-fedora.config
+Source800: %{name}-loongarch64-fedora.config
+Source801: %{name}-loongarch64-debug-fedora.config
+Source802: %{name}-loongarch64-4k-fedora.config
+Source803: %{name}-loongarch64-4k-debug-fedora.config
+Source804: %{name}-loongarch64-64k-fedora.config
+Source805: %{name}-loongarch64-64k-debug-fedora.config
 
 Source62: def_variants.yaml.fedora
 %endif
@@ -1149,12 +1217,14 @@ Source202: Module.kabi_ppc64le
 Source203: Module.kabi_s390x
 Source204: Module.kabi_x86_64
 Source205: Module.kabi_riscv64
+Source206: Module.kabi_loongarch64
 
 Source210: Module.kabi_dup_aarch64
 Source211: Module.kabi_dup_ppc64le
 Source212: Module.kabi_dup_s390x
 Source213: Module.kabi_dup_x86_64
 Source214: Module.kabi_dup_riscv64
+Source215: Module.kabi_dup_loongarch64
 
 Source300: kernel-abi-stablelists-%{kabiversion}.tar.xz
 Source301: kernel-kabi-dw-%{kabiversion}.tar.xz
@@ -1177,6 +1247,12 @@ Source484: %{name}-x86_64-rt-fedora.config
 Source485: %{name}-x86_64-rt-debug-fedora.config
 Source486: %{name}-riscv64-rt-fedora.config
 Source487: %{name}-riscv64-rt-debug-fedora.config
+Source500: %{name}-loongarch64-rt-fedora.config
+Source501: %{name}-loongarch64-rt-debug-fedora.config
+Source502: %{name}-loongarch64-rt-4k-fedora.config
+Source503: %{name}-loongarch64-rt-4k-debug-fedora.config
+Source504: %{name}-loongarch64-rt-64k-fedora.config
+Source505: %{name}-loongarch64-rt-64k-debug-fedora.config
 %endif
 %endif
 
@@ -1217,6 +1293,12 @@ Source4002: gating.yaml
 
 Patch1: patch-%{patchversion}-redhat.patch
 %endif
+
+# Patch11: 0001-stmmac-yt6801-backport-form-netdev.patch
+# Patch12: 0001-unify-platform-suspend-resume-routines-for-pci_dwmac.patch
+# Patch13: 0003-add-dwmac-glue-driver-for-motorcomm-yt6801.patch
+
+Patch11: 07ef4614364d18346618677f483b7b73af6e0b75.patch
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
@@ -1767,7 +1849,7 @@ Requires: %{name}-%{1}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{1}}\
 Requires: ((%{name}-%{1}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{1}}) if %{name}-modules-extra-matched)\
 # Prefer the plain kernel-<subpackage>-core pkg as core-uname-r provider\
 Suggests: %{name}-%{1}-core = %{specversion}-%{release}\
-%if "%{1}" == "rt" || "%{1}" == "rt-debug" || "%{1}" == "rt-64k" || "%{1}" == "rt-64k-debug"\
+%if "%{1}" == "rt" || "%{1}" == "rt-debug" || "%{1}" == "rt-4k" || "%{1}" == "rt-64k" || "%{1}" == "rt-4k-debug" || "%{1}" == "rt-64k-debug"\
 Requires: realtime-setup\
 %endif\
 Provides: installonlypkg(kernel)\
@@ -1814,7 +1896,7 @@ Requires: %{name}-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %
 %endif\
 %{expand:%%kernel_debuginfo_package %{?1:%{1}}}\
 %endif\
-%if %{with_efiuki} && ("%{1}" != "rt" && "%{1}" != "rt-debug" && "%{1}" != "rt-64k" && "%{1}" != "rt-64k-debug")\
+%if %{with_efiuki} && ("%{1}" != "rt" && "%{1}" != "rt-debug" && "%{1}" != "rt-4k" && "%{1}" != "rt-4k-debug" && "%{1}" != "rt-64k" && "%{1}" != "rt-64k-debug")\
 %package %{?1:%{1}-}uki-virt\
 Summary: %{variant_summary} unified kernel image for virtual machines\
 Provides: installonlypkg(kernel)\
@@ -1925,6 +2007,52 @@ It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
 %endif
 
+%if %{with_loongarch64_4k_base}
+%define variant_summary The Linux kernel compiled for 4k pagesize usage
+%kernel_variant_package 4k
+%description 4k-core
+The kernel package contains a variant of the LoongArch64 Linux kernel using
+a 4K page size.
+%endif
+
+%if %{with_loongarch64_4k} && %{with_debug}
+%define variant_summary The Linux kernel compiled with extra debugging enabled
+%if !%{debugbuildsenabled}
+%kernel_variant_package -m 4k-debug
+%else
+%kernel_variant_package 4k-debug
+%endif
+%description 4k-debug-core
+The debug kernel package contains a variant of the LoongArch64 Linux kernel using
+a 4K page size.
+This variant of the kernel has numerous debugging options enabled.
+It should only be installed when trying to gather additional information
+on kernel bugs, as some of these options impact performance noticably.
+%endif
+
+%if %{with_loongarch64_64k_base}
+%define variant_summary The Linux kernel compiled for 64k pagesize usage
+%kernel_variant_package 64k
+%description 64k-core
+The kernel package contains a variant of the LoongArch64 Linux kernel using
+a 4K page size.
+%endif
+
+%if %{with_loongarch64_64k} && %{with_debug}
+%define variant_summary The Linux kernel compiled with extra debugging enabled
+%if !%{debugbuildsenabled}
+%kernel_variant_package -m 64k-debug
+%else
+%kernel_variant_package 64k-debug
+%endif
+%description 64k-debug-core
+The debug kernel package contains a variant of the LoongArch64 Linux kernel using
+a 64K page size.
+This variant of the kernel has numerous debugging options enabled.
+It should only be installed when trying to gather additional information
+on kernel bugs, as some of these options impact performance noticably.
+%endif
+
 %if %{with_debug} && %{with_realtime}
 %define variant_summary The Linux PREEMPT_RT kernel compiled with extra debugging enabled
 %kernel_variant_package rt-debug
@@ -1964,6 +2092,52 @@ a 64K page size.
 %endif
 %description rt-64k-debug-core
 The debug kernel package contains a variant of the ARM64 Linux PREEMPT_RT kernel using
+a 64K page size.
+This variant of the kernel has numerous debugging options enabled.
+It should only be installed when trying to gather additional information
+on kernel bugs, as some of these options impact performance noticably.
+%endif
+
+%if %{with_realtime_loongarch64_4k_base}
+%define variant_summary The Linux PREEMPT_RT kernel compiled for 4k pagesize usage
+%kernel_variant_package rt-4k
+%description rt-4k-core
+The kernel package contains a variant of the LoongArch64 Linux PREEMPT_RT kernel using
+a 4K page size.
+%endif
+
+%if %{with_realtime_loongarch64_4k} && %{with_debug}
+%define variant_summary The Linux PREEMPT_RT kernel compiled with extra debugging enabled
+%if !%{debugbuildsenabled}
+%kernel_variant_package -m rt-4k-debug
+%else
+%kernel_variant_package rt-4k-debug
+%endif
+%description rt-4k-debug-core
+The debug kernel package contains a variant of the LoongArch64 Linux PREEMPT_RT kernel using
+a 4K page size.
+This variant of the kernel has numerous debugging options enabled.
+It should only be installed when trying to gather additional information
+on kernel bugs, as some of these options impact performance noticably.
+%endif
+
+%if %{with_realtime_loongarch64_64k_base}
+%define variant_summary The Linux PREEMPT_RT kernel compiled for 64k pagesize usage
+%kernel_variant_package rt-64k
+%description rt-64k-core
+The kernel package contains a variant of the LoongArch64 Linux PREEMPT_RT kernel using
+a 64K page size.
+%endif
+
+%if %{with_realtime_loongarch64_64k} && %{with_debug}
+%define variant_summary The Linux PREEMPT_RT kernel compiled with extra debugging enabled
+%if !%{debugbuildsenabled}
+%kernel_variant_package -m rt-64k-debug
+%else
+%kernel_variant_package rt-64k-debug
+%endif
+%description rt-64k-debug-core
+The debug kernel package contains a variant of the LoongArch64 Linux PREEMPT_RT kernel using
 a 64K page size.
 This variant of the kernel has numerous debugging options enabled.
 It should only be installed when trying to gather additional information
@@ -2079,6 +2253,38 @@ Prebuilt debug kernel image with auto DTB selection for ARM64 UEFI devices.
 Prebuilt default kernel image with auto DTB selection for ARM64 UEFI devices.
 %endif
 
+%if %{with_loongarch64_4k} && %{with_debug} && %{with_efiuki}
+%description 4k-debug-uki-virt
+Prebuilt 4k debug unified kernel image for virtual machines.
+
+%description 4k-debug-uki-virt-addons
+Prebuilt 4k debug unified kernel image addons for virtual machines.
+%endif
+
+%if %{with_loongarch64_4k_base} && %{with_efiuki}
+%description 4k-uki-virt
+Prebuilt 4k unified kernel image for virtual machines.
+
+%description 4k-uki-virt-addons
+Prebuilt 4k unified kernel image addons for virtual machines.
+%endif
+
+%if %{with_loongarch64_64k} && %{with_debug} && %{with_efiuki}
+%description 64k-debug-uki-virt
+Prebuilt 64k debug unified kernel image for virtual machines.
+
+%description 64k-debug-uki-virt-addons
+Prebuilt 64k debug unified kernel image addons for virtual machines.
+%endif
+
+%if %{with_loongarch64_64k_base} && %{with_efiuki}
+%description 64k-uki-virt
+Prebuilt 64k unified kernel image for virtual machines.
+
+%description 64k-uki-virt-addons
+Prebuilt 64k unified kernel image addons for virtual machines.
+%endif
+
 %ifnarch noarch %{nobuildarches}
 %kernel_modules_extra_matched_package
 %endif
@@ -2173,6 +2379,11 @@ cp -a %{SOURCE1} .
 ApplyOptionalPatch patch-%{patchversion}-redhat.patch
 %endif
 
+# ApplyOptionalPatch 0001-stmmac-yt6801-backport-form-netdev.patch
+# ApplyOptionalPatch 0001-unify-platform-suspend-resume-routines-for-pci_dwmac.patch
+# ApplyOptionalPatch 0003-add-dwmac-glue-driver-for-motorcomm-yt6801.patch
+ApplyOptionalPatch  07ef4614364d18346618677f483b7b73af6e0b75.patch
+
 ApplyOptionalPatch linux-kernel-test.patch
 
 %{log_msg "End of patch applications"}
@@ -2253,6 +2464,7 @@ GetArch()
   *s390x*) echo "s390x" ;;
   *x86_64*) echo "x86_64" ;;
   *riscv64*) echo "riscv64" ;;
+  *loongarch64*) echo "loongarch64" ;;
   # no arch, apply everywhere
   *) echo "" ;;
   esac
@@ -2525,7 +2737,7 @@ BuildKernel() {
     mkdir -p $RPM_BUILD_ROOT%{debuginfodir}/%{image_install_path}
 %endif
 
-%ifarch aarch64 riscv64
+%ifarch aarch64 riscv64 loongarch64
     %{log_msg "Build dtb kernel"}
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     %{make} ARCH=$Arch dtbs INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
@@ -2973,7 +3185,7 @@ BuildKernel() {
     # Copy the System.map file for depmod to use
     cp System.map $RPM_BUILD_ROOT/.
 
-    if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug" ]]; then
+    if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "rt-4k" || "$Variant" == "rt-4k-debug" || "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug" ]]; then
 	%{log_msg "Skipping efiuki build"}
     else
 %if %{with_efiuki}
@@ -3028,7 +3240,7 @@ BuildKernel() {
 # with_efiuki
 %endif
 	:  # in case of empty block
-    fi # "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug"
+    fi # "$Variant" == "rt" || "$Variant" == "rt-debug" || "$Variant" == "rt-4k" || "$Variant" == "rt-4k-debug" || "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" || "$Variant" == "automotive" || "$Variant" == "automotive-debug"
 
 %if %{with_dtbloader}
     if [[ -z "$Variant" || "$Variant" == "debug" ]]; then
@@ -3146,6 +3358,9 @@ BuildKernel() {
         variants_param=""
         if [[ "$Variant" == "rt" || "$Variant" == "rt-debug" ]]; then
             variants_param="-r rt"
+        fi
+        if [[ "$Variant" == "rt-4k" || "$Variant" == "rt-4k-debug" ]]; then
+            variants_param="-r rt-4k"
         fi
         if [[ "$Variant" == "rt-64k" || "$Variant" == "rt-64k-debug" ]]; then
             variants_param="-r rt-64k"
@@ -3281,7 +3496,15 @@ cd linux-%{KVERREL}
 BuildKernel %make_target %kernel_image %{_use_vdso} rt-debug
 %endif
 
+%if %{with_realtime_loongarch64_4k}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-4k-debug
+%endif
+
 %if %{with_realtime_arm64_64k}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k-debug
+%endif
+
+%if %{with_realtime_loongarch64_64k}
 BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k-debug
 %endif
 
@@ -3289,11 +3512,19 @@ BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k-debug
 BuildKernel %make_target %kernel_image %{_use_vdso} automotive-debug
 %endif
 
+%if %{with_loongarch64_4k}
+BuildKernel %make_target %kernel_image %{_use_vdso} 4k-debug
+%endif
+
 %if %{with_arm64_16k}
 BuildKernel %make_target %kernel_image %{_use_vdso} 16k-debug
 %endif
 
 %if %{with_arm64_64k}
+BuildKernel %make_target %kernel_image %{_use_vdso} 64k-debug
+%endif
+
+%if %{with_loongarch64_64k}
 BuildKernel %make_target %kernel_image %{_use_vdso} 64k-debug
 %endif
 
@@ -3306,6 +3537,10 @@ BuildKernel %make_target %kernel_image %{_use_vdso} debug
 BuildKernel %make_target %kernel_image %{_use_vdso} zfcpdump
 %endif
 
+%if %{with_loongarch64_4k_base}
+BuildKernel %make_target %kernel_image %{_use_vdso} 4k
+%endif
+
 %if %{with_arm64_16k_base}
 BuildKernel %make_target %kernel_image %{_use_vdso} 16k
 %endif
@@ -3314,11 +3549,23 @@ BuildKernel %make_target %kernel_image %{_use_vdso} 16k
 BuildKernel %make_target %kernel_image %{_use_vdso} 64k
 %endif
 
+%if %{with_loongarch64_64k_base}
+BuildKernel %make_target %kernel_image %{_use_vdso} 64k
+%endif
+
 %if %{with_realtime_base}
 BuildKernel %make_target %kernel_image %{_use_vdso} rt
 %endif
 
+%if %{with_realtime_loongarch64_4k_base}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-4k
+%endif
+
 %if %{with_realtime_arm64_64k_base}
+BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k
+%endif
+
+%if %{with_realtime_loongarch64_64k_base}
 BuildKernel %make_target %kernel_image %{_use_vdso} rt-64k
 %endif
 
@@ -3331,7 +3578,7 @@ BuildKernel %make_target %kernel_image %{_use_vdso}
 %endif
 
 %ifnarch noarch i686 %{nobuildarches}
-%if !%{with_debug} && !%{with_zfcpdump} && !%{with_stock} && !%{with_arm64_16k} && !%{with_arm64_64k} && !%{with_realtime} && !%{with_realtime_arm64_64k} && !%{with_automotive}
+%if !%{with_debug} && !%{with_zfcpdump} && !%{with_stock} && !%{with_arm64_16k} && !%{with_arm64_64k} && !%{with_loongarch64_4k} && !%{with_loongarch64_64k} && !%{with_realtime} && !%{with_realtime_arm64_64k} && !%{with_realtime_loongarch64_4k} && !%{with_realtime_loongarch64_64k} && !%{with_automotive}
 # If only building the user space tools, then initialize the build environment
 # and some variables so that the various userspace tools can be built.
 %{log_msg "Initialize userspace tools build environment"}
@@ -3693,7 +3940,7 @@ find $RPM_BUILD_ROOT/usr/include \
 %endif
 
 %if %{with_cross_headers}
-HDR_ARCH_LIST='arm64 powerpc s390 x86 riscv'
+HDR_ARCH_LIST='arm64 powerpc s390 x86 riscv loongarch'
 mkdir -p $RPM_BUILD_ROOT/usr/tmp-headers
 
 for arch in $HDR_ARCH_LIST; do
@@ -4395,6 +4642,46 @@ fi\
 %kernel_variant_preun -v 64k -u virt -e
 %endif
 
+%if %{with_loongarch64_4k_base}
+%kernel_variant_preun -v 4k -e
+%kernel_variant_post -v 4k
+%endif
+
+%if %{with_debug} && %{with_loongarch64_4k}
+%kernel_variant_preun -v 4k-debug -e
+%kernel_variant_post -v 4k-debug
+%endif
+
+%if %{with_loongarch64_4k} && %{with_debug} && %{with_efiuki}
+%kernel_variant_posttrans -v 4k-debug -u virt
+%kernel_variant_preun -v 4k-debug -u virt -e
+%endif
+
+%if %{with_loongarch64_4k_base} && %{with_efiuki}
+%kernel_variant_posttrans -v 4k -u virt
+%kernel_variant_preun -v 4k -u virt -e
+%endif
+
+%if %{with_loongarch64_64k_base}
+%kernel_variant_preun -v 64k -e
+%kernel_variant_post -v 64k
+%endif
+
+%if %{with_debug} && %{with_loongarch64_64k}
+%kernel_variant_preun -v 64k-debug -e
+%kernel_variant_post -v 64k-debug
+%endif
+
+%if %{with_loongarch64_64k} && %{with_debug} && %{with_efiuki}
+%kernel_variant_posttrans -v 64k-debug -u virt
+%kernel_variant_preun -v 64k-debug -u virt -e
+%endif
+
+%if %{with_loongarch64_64k_base} && %{with_efiuki}
+%kernel_variant_posttrans -v 64k -u virt
+%kernel_variant_preun -v 64k -u virt -e
+%endif
+
 %if %{with_realtime_base}
 %kernel_variant_preun -v rt
 %kernel_variant_post -v rt -r kernel
@@ -4410,6 +4697,18 @@ fi\
 %kernel_variant_post -v rt-debug
 %endif
 
+%if %{with_realtime_loongarch64_4k_base}
+%kernel_variant_preun -v rt-4k
+%kernel_variant_post -v rt-4k
+%kernel_kvm_post rt-4k
+%endif
+
+%if %{with_debug} && %{with_realtime_loongarch64_4k}
+%kernel_variant_preun -v rt-4k-debug
+%kernel_variant_post -v rt-4k-debug
+%kernel_kvm_post rt-4k-debug
+%endif
+
 %if %{with_realtime_arm64_64k_base}
 %kernel_variant_preun -v rt-64k
 %kernel_variant_post -v rt-64k
@@ -4417,6 +4716,18 @@ fi\
 %endif
 
 %if %{with_debug} && %{with_realtime_arm64_64k}
+%kernel_variant_preun -v rt-64k-debug
+%kernel_variant_post -v rt-64k-debug
+%kernel_kvm_post rt-64k-debug
+%endif
+
+%if %{with_realtime_loongarch64_64k_base}
+%kernel_variant_preun -v rt-64k
+%kernel_variant_post -v rt-64k
+%kernel_kvm_post rt-64k
+%endif
+
+%if %{with_debug} && %{with_realtime_loongarch64_64k}
 %kernel_variant_preun -v rt-64k-debug
 %kernel_variant_post -v rt-64k-debug
 %kernel_kvm_post rt-64k-debug
@@ -4451,7 +4762,7 @@ fi\
 %endif
 
 %if %{with_kabidw_base}
-%ifarch x86_64 s390x ppc64 ppc64le aarch64 riscv64
+%ifarch x86_64 s390x ppc64 ppc64le aarch64 riscv64 loongarch64
 %files kernel-kabidw-base-internal
 %defattr(-,root,root)
 /kabidw-base/%{_target_cpu}/*
@@ -4686,7 +4997,7 @@ fi\
 %ghost /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?3:+%{3}}\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/.vmlinuz.hmac \
 %ghost /%{image_install_path}/.vmlinuz-%{KVERREL}%{?3:+%{3}}.hmac \
-%ifarch aarch64 riscv64\
+%ifarch aarch64 riscv64 loongarch64\
 /lib/modules/%{KVERREL}%{?3:+%{3}}/dtb \
 %ghost /%{image_install_path}/dtb-%{KVERREL}%{?3:+%{3}} \
 %endif\
@@ -4744,7 +5055,7 @@ fi\
 %{expand:%%files -f debuginfo%{?3}.list %{?3:%{3}-}debuginfo}\
 %endif\
 %endif\
-%if %{with_efiuki} && "%{3}" != "rt" && "%{3}" != "rt-debug" && "%{3}" != "rt-64k" && "%{3}" != "rt-64k-debug"\
+%if %{with_efiuki} && "%{3}" != "rt" && "%{3}" != "rt-debug" && "%{3}" != "rt-4k" && "%{3}" != "rt-4k-debug" && "%{3}" != "rt-64k" && "%{3}" != "rt-64k-debug"\
 %{expand:%%files %{?3:%{3}-}uki-virt}\
 %dir /lib/modules\
 %dir /lib/modules/%{KVERREL}%{?3:+%{3}}\
@@ -4796,16 +5107,29 @@ fi\
 %if %{with_stock}
 %kernel_variant_files %{_use_vdso} %{with_debug} debug
 %endif
+%if %{with_loongarch64_4k}
+%kernel_variant_files %{_use_vdso} %{with_debug} 4k-debug
+%endif
 %if %{with_arm64_16k}
 %kernel_variant_files %{_use_vdso} %{with_debug} 16k-debug
 %endif
 %if %{with_arm64_64k}
 %kernel_variant_files %{_use_vdso} %{with_debug} 64k-debug
 %endif
+%if %{with_loongarch64_64k}
+%kernel_variant_files %{_use_vdso} %{with_debug} 64k-debug
+%endif
 %kernel_variant_files %{_use_vdso} %{with_realtime_base} rt
 %if %{with_realtime}
 %kernel_variant_files %{_use_vdso} %{with_debug} rt-debug
 %endif
+%if %{with_realtime_loongarch64_4k}
+%kernel_variant_files %{_use_vdso} %{with_debug} rt-4k-debug
+%endif
+%if %{with_realtime_loongarch64_64k}
+%kernel_variant_files %{_use_vdso} %{with_debug} rt-64k-debug
+%endif
+
 %kernel_variant_files %{_use_vdso} %{with_automotive_base} automotive
 %if %{with_automotive} && !%{with_automotive_build}
 %kernel_variant_files %{_use_vdso} %{with_debug} automotive-debug
@@ -4835,11 +5159,31 @@ fi\
 %files 64k-debug-modules
 %files 64k-debug-modules-extra
 %endif
+%if %{with_loongarch64_4k}
+%files 4k-debug
+%files 4k-debug-core
+%files 4k-debug-devel
+%files 4k-debug-devel-matched
+%files 4k-debug-modules
+%files 4k-debug-modules-extra
+%endif
+%if %{with_loongarch64_64k}
+%files 64k-debug
+%files 64k-debug-core
+%files 64k-debug-devel
+%files 64k-debug-devel-matched
+%files 64k-debug-modules
+%files 64k-debug-modules-extra
+%endif
 %endif
 %kernel_variant_files %{_use_vdso} %{with_zfcpdump} zfcpdump
 %kernel_variant_files %{_use_vdso} %{with_arm64_16k_base} 16k
 %kernel_variant_files %{_use_vdso} %{with_arm64_64k_base} 64k
+%kernel_variant_files %{_use_vdso} %{with_loongarch64_4k_base} 4k
+%kernel_variant_files %{_use_vdso} %{with_loongarch64_64k_base} 64k
 %kernel_variant_files %{_use_vdso} %{with_realtime_arm64_64k_base} rt-64k
+%kernel_variant_files %{_use_vdso} %{with_realtime_loongarch64_4k_base} rt-4k
+%kernel_variant_files %{_use_vdso} %{with_realtime_loongarch64_64k_base} rt-64k
 %if %{with_realtime_arm64_64k}
 %kernel_variant_files %{_use_vdso} %{with_debug} rt-64k-debug
 %endif
